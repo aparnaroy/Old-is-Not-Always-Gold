@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Old is Not Always Gold</title>
+    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-database.js"></script>
+  </head>
+  <body>
+    <h1>Welcome to Firebase Secure App</h1>
+    <p>Security often depends on using up-to-date components. This Firebase app uses an old version of the SDK. Can you uncover the secrets hidden in the database?</p>
+    <p>Hint: The Firebase SDK version is 7.24.0</p>
+    <p>Login to see secret data!</p>
+    <div id="flag"></div>
+
+    <script>
+      // Initialize Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyDR5Irb0Jb3-vHuVVNUIkgE5R57MZvZ2vw",
+        authDomain: "old-is-not-always-gold.firebaseapp.com",
+        projectId: "old-is-not-always-gold",
+        storageBucket: "old-is-not-always-gold.firebasestorage.app",
+        messagingSenderId: "1000004859732",
+        appId: "1:1000004859732:web:cd8406362cc450caa5fac1",
+        measurementId: "G-1H6YR75LVC"
+      };
+      
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+
+      // Fetch the token from the backend
+      fetch('http://localhost:3000/generate-token')
+        .then(response => response.json())
+        .then(data => {
+          const token = data.token; // The token received from the backend
+
+          // Sign in with the custom token
+          auth.signInWithCustomToken(token)
+            .then((userCredential) => {
+              console.log("Logged in successfully!");
+              alert("You are logged in!");
+              userCredential.user.getIdToken().then(idToken => {
+                // Securely fetch the flag from the backend
+                fetch('http://localhost:3000/get-flag', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': idToken
+                  }
+                })
+                  .then(response => response.json())
+                  .then(data => {
+                    // Display the flag
+                    const flagDiv = document.getElementById('flag');
+                    flagDiv.textContent = `Congratulations! The flag is: ${data.flag}`;
+                    flagDiv.style.display = 'block';
+                  })
+                  .catch(error => {
+                    console.error('Failed to fetch the flag:', error);
+                  });
+              });
+            })
+            .catch((error) => {
+              console.error("Login failed: ", error.message);
+            });
+        })
+        .catch((error) => {
+          console.error("Failed to fetch token:", error);
+        });
+    </script>
+  </body>
+</html>
