@@ -1,2 +1,3 @@
-# Old-is-Not-Always-Gold
-A CTF problem demonstrating VUNLERABLE AND OUTDATED COMPONENTS
+# OWASP Security Misconfiguration CTF Problem
+
+A CTF problem demonstrating SECURITY MISCONFIGURATION
