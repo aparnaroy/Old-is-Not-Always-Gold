@@ -1,4 +1,4 @@
-# OWASP Security Misconfiguration CTF Problem
+# Security Misconfiguration
 
 A CTF problem demonstrating a SECURITY MISCONFIGURATION.
 
